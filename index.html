@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* ///ai// */
+    :root{
+    --lcd-bg:#b9c7a2;
+    --lcd-ink:#1d2819;
+    --lcd-dim:rgba(29,40,25,.55);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  /* wooden desk */
+  body{
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    color:#222;
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 2px, transparent 2px 7px),
+      linear-gradient(180deg,#8a5a34,#6b4224);
+  }
+
+  /* brushed-metal body */
+  .box{
+    position:relative;
+    width:min(480px,100%);
+    padding:30px 26px 28px;
+    border-radius:26px;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 1px, rgba(0,0,0,.04) 1px 3px),
+      linear-gradient(145deg,#e4e6ea 0%,#b4b8c0 45%,#d7dadf 100%);
+    border:1px solid #7d828c;
+    box-shadow:
+      0 2px 0 #fff inset,
+      0 -3px 6px rgba(0,0,0,.25) inset,
+      0 6px 0 #868b95,
+      0 24px 40px rgba(0,0,0,.55);
+  }
+  /* screws */
+  .box::before, .box::after{
+    content:"";
+    position:absolute;
+    top:10px;
+    width:12px; height:12px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#f4f5f7,#8b909a 70%);
+    box-shadow:0 1px 1px rgba(0,0,0,.5), inset 0 0 0 1px rgba(0,0,0,.2);
+  }
+  .box::before{ left:12px; }
+  .box::after{ right:12px; }
+
+  /* engraved label plate */
+  .hint{
+    margin-bottom:16px;
+    padding:12px 16px;
+    border-radius:10px;
+    background:linear-gradient(180deg,#2c2f36,#3b3f48);
+    box-shadow:0 2px 4px rgba(0,0,0,.6) inset, 0 1px 0 rgba(255,255,255,.7);
+  }
+  .hint h2{
+    font-size:.8rem;
+    font-weight:600;
+    color:#c7ccd6;
+    margin-bottom:3px;
+    text-shadow:0 -1px 0 #000;
+  }
+  .hint p{
+    font-family:"Courier New",monospace;
+    font-size:1.05rem;
+    font-weight:700;
+    color:#ffd27a;
+    text-shadow:0 0 6px rgba(255,190,80,.5);
+  }
+
+  /* LCD input */
+  #input{
+    width:100%;
+    margin-bottom:20px;
+    padding:14px 16px;
+    font-family:"Courier New",monospace;
+    font-size:1.2rem;
+    font-weight:700;
+    color:var(--lcd-ink);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.28), transparent 45%),
+      var(--lcd-bg);
+    border:0;
+    border-radius:8px;
+    outline:none;
+    box-shadow:
+      0 3px 8px rgba(0,0,0,.55) inset,
+      0 0 0 4px #3a3d45,
+      0 0 0 5px #151619,
+      0 1px 0 5px rgba(255,255,255,.6);
+  }
+  #input::placeholder{ color:var(--lcd-dim); font-weight:400; font-size:.95rem; }
+  #input:focus{ box-shadow:0 3px 8px rgba(0,0,0,.55) inset, 0 0 0 4px #3a3d45, 0 0 0 7px rgba(255,170,40,.7); }
+
+  /* glossy keys */
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:6px;
+  }
+  .actions br{ display:none; }
+
+  button{
+    position:relative;
+    padding:16px 10px;
+    font:inherit;
+    font-size:.95rem;
+    font-weight:700;
+    color:#2a2d34;
+    cursor:pointer;
+    border:1px solid #7a7f89;
+    border-radius:12px;
+    background:linear-gradient(180deg,#fdfdfe 0%,#d9dce2 48%,#c3c7cf 52%,#e4e6ea 100%);
+    box-shadow:
+      0 5px 0 #8b909a,
+      0 8px 8px rgba(0,0,0,.35),
+      0 1px 0 #fff inset;
+    text-shadow:0 1px 0 rgba(255,255,255,.8);
+    transition:transform .06s ease, box-shadow .06s ease;
+  }
+  button:active{
+    transform:translateY(4px);
+    box-shadow:0 1px 0 #8b909a, 0 2px 3px rgba(0,0,0,.35), 0 1px 0 #fff inset;
+  }
+  button:focus-visible{ outline:3px solid #ff9f1a; outline-offset:3px; }
+  #btn5{
+    grid-column:1 / -1;
+    color:#fff;
+    text-shadow:0 -1px 0 rgba(0,0,0,.5);
+    border-color:#8a2a12;
+    background:linear-gradient(180deg,#ff9a6b 0%,#f0592b 48%,#d9411a 52%,#f2693a 100%);
+    box-shadow:0 5px 0 #8a2a12, 0 8px 8px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.55) inset;
+  }
+  #btn5:active{ box-shadow:0 1px 0 #8a2a12, 0 2px 3px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.55) inset; }
+
+  /* LCD result readouts */
+  .results{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:28px;
+  }
+  .result{
+    padding:12px 14px;
+    border-radius:8px;
+    font-family:"Courier New",monospace;
+    font-size:.95rem;
+    font-weight:700;
+    line-height:1.3;
+    color:var(--lcd-ink);
+    overflow-wrap:anywhere;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.28), transparent 45%),
+      var(--lcd-bg);
+    box-shadow:
+      0 3px 7px rgba(0,0,0,.5) inset,
+      0 0 0 3px #3a3d45,
+      0 0 0 4px #151619;
+  }
+  .result span{ font-weight:400; color:var(--lcd-dim); }
+  #total{ grid-column:1 / -1; font-size:1.15rem; }
+
+  @media (max-width:440px){
+    .box{ padding:28px 18px 22px; }
+    .actions, .results{ grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; }
+  }
+
+</style>
+<body>
+    <style>
+    </style>
+<div class="box">
+  <div class="hint">
+    <h2>Example: write numbers like this</h2>
+    <p>23,45,34,512,43,53</p>
+  </div>
+
+  <input type="text" placeholder="enter numbers, comma separated" id="input">
+
+  <div class="actions">
+    <button id="btn">Bigger digits</button>
+    <button id="btn2">Smaller digits</button>
+    <button id="btn3" onclick="Odd()">Odd Number</button>
+    <button id="btn4" onclick="Even()">Even number</button>
+    <button id="btn5" onclick="Total()">Total</button>
+  </div>
+
+  <div class="results">
+    <h1 class="result" id="hh">BIGGEST NUMBER: </h1>
+    <h1 class="result" id="hsm"><span>SMALL NUMBER:</span> </h1>
+    <h1 class="result" id="odd"><span>ODD NUMBER:</span> </h1>
+    <h1 class="result" id="even"><span>EVEN NUMBER:</span> </h1>
+    <h1 class="result" id="total"><span>TOTAL NUMBER:</span> </h1>
+  </div>
+</div>
+<script>
+    let input=document.querySelector('#input')
+   
+    let hh=document.querySelector('#hh')
+    let smalls=document.querySelector('#hsm')
+    let odd=document.querySelector('#odd')
+    let even=document.querySelector('#even')
+    let totals=document.querySelector('#total')
+
+
+    let btn=document.querySelector('#btn')
+    let btn2=document.querySelector('#btn2')
+
+    btn.addEventListener('click',()=>{
+        let high=0
+        let inputshow=input.value.split(',')
+        for(let ins of inputshow){
+            let num=Number(ins)
+            if(num>high){
+                high=num
+            }
+        }
+        hh.innerText="BIGGEST NUMBER:"+high
+    
+})
+btn2.addEventListener('click',()=>{
+     let small=Infinity
+     let result=input.value.split(',')
+     for(let inpt of result){
+         let num=Number(inpt)
+        if(num<small){
+        small=num
+       
+        }
+     }
+     smalls.innerText="SMALL NUMBER:"+small
+
+    })
+
+function Odd(){
+    let odds=0
+    let result=input.value.split(',')
+    for(let inpt of result){
+        let num=Number(inpt)
+        if(num%2!==0){
+            odds++
+        }
+    }
+    odd.innerText="ODD NUMBER:"+odds
+}
+function Even(){
+    let evens=0
+    let result=input.value.split(',')
+    for(let inpt of result){
+        let num=Number(inpt)
+        if(num%2==0){
+            evens++
+        }
+    }
+even.innerText="EVEN NUMBER:"+evens
+}
+function Total(){
+    let total=0
+    let result=input.value.split(',')
+    for(let a of result){
+        let num=Number(a)
+        total=total+num
+    }
+       totals.innerText="TOTAL NUMBER :"+total
+       }
+</script>
+</body>
+</html>
